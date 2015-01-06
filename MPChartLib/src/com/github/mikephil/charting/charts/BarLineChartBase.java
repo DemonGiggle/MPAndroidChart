@@ -644,7 +644,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
         int i = leftVirtualIndex;
         while (i != rightVirtualIndex) {
             position[0] = i;
-            final int pointIndex = (i + totalXVals) % totalXVals;
+            final int pointIndex = ( (i % totalXVals) + totalXVals) % totalXVals;
 
             // center the text
             if (mXLabels.isCenterXLabelsEnabled())
@@ -654,7 +654,6 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
             String label = mData.getXVals().get(pointIndex);
 
             if (position[0] >= mOffsetLeft && position[0] <= getWidth() - mOffsetRight) {
-                Log.d("Giggle", "current virtual index = " + i + " position = " + position[0] + " point index = " + pointIndex);
 
                 if (mXLabels.isAvoidFirstLastClippingEnabled()) {
 
