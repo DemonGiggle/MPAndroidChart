@@ -190,7 +190,6 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
      * @param event
      */
     private void performDrag(MotionEvent event) {
-
         mMatrix.set(mSavedMatrix);
         PointF dragPoint = new PointF(event.getX(), event.getY());
 

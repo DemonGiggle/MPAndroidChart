@@ -456,7 +456,8 @@ public class Transformer {
         // newTransY = (height * (mScaleY - 1f)) / 2f;
         // }
 
-        vals[Matrix.MTRANS_X] = newTransX;
+        // FIXME: maybe we need a flag to decide infinite x-axis scrolling ?
+//        vals[Matrix.MTRANS_X] = newTransX;
         vals[Matrix.MSCALE_X] = mScaleX;
 
         vals[Matrix.MTRANS_Y] = newTransY;
@@ -598,6 +599,7 @@ public class Transformer {
      * @return
      */
     public boolean hasNoDragOffset() {
-        return mTransOffsetX <= 0 && mTransOffsetY <= 0 ? true : false;
+//        return mTransOffsetX <= 0 && mTransOffsetY <= 0 ? true : false;
+        return false;
     }
 }
