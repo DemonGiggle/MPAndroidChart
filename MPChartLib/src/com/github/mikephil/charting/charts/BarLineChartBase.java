@@ -626,46 +626,36 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
      */
     protected void drawXLabels(float yPos) {
 
-        // get view port
-        float[] leftPointIndex = new float[] {mOffsetLeft, 0};
-        float[] rightPointIndex = new float[] {getWidth() - mOffsetRight, 0};
-        mTrans.pixelsToValue(leftPointIndex);
-        mTrans.pixelsToValue(rightPointIndex);
-
-        final int totalXVals = mData.getXValCount();
-        final int leftVirtualIndex = (int) leftPointIndex[0];
-        final int rightVirtualIndex = (int) rightPointIndex[0] + 1;
-
         // pre allocate to save performance (dont allocate in loop)
         float[] position = new float[] {
                 0f, 0f
         };
 
-        int i = leftVirtualIndex;
-        while (i != rightVirtualIndex) {
+        for (int i = 0; i < mData.getXValCount(); i += mXLabels.mXAxisLabelModulus) {
+
             position[0] = i;
-            final int pointIndex = ( (i % totalXVals) + totalXVals) % totalXVals;
 
             // center the text
             if (mXLabels.isCenterXLabelsEnabled())
                 position[0] += 0.5f;
 
             mTrans.pointValuesToPixel(position);
-            String label = mData.getXVals().get(pointIndex);
 
             if (position[0] >= mOffsetLeft && position[0] <= getWidth() - mOffsetRight) {
+
+                String label = mData.getXVals().get(i);
 
                 if (mXLabels.isAvoidFirstLastClippingEnabled()) {
 
                     // avoid clipping of the last
-                    if (i == rightVirtualIndex - 1) {
+                    if (i == mData.getXValCount() - 1) {
                         float width = Utils.calcTextWidth(mXLabelPaint, label);
 
                         if (width > getOffsetRight() * 2 && position[0] + width > getWidth())
                             position[0] -= width / 2;
 
                         // avoid clipping of the first
-                    } else if (i == leftVirtualIndex) {
+                    } else if (i == 0) {
 
                         float width = Utils.calcTextWidth(mXLabelPaint, label);
                         position[0] += width / 2;
@@ -673,49 +663,10 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
                 }
 
                 mDrawCanvas.drawText(label, position[0],
-                    yPos,
-                    mXLabelPaint);
+                        yPos,
+                        mXLabelPaint);
             }
-
-            i++;
         }
-
-//        for (int i = 0; i < mData.getXValCount(); i += mXLabels.mXAxisLabelModulus) {
-//
-//            position[0] = i;
-//
-//            // center the text
-//            if (mXLabels.isCenterXLabelsEnabled())
-//                position[0] += 0.5f;
-//
-//            mTrans.pointValuesToPixel(position);
-//
-//            if (position[0] >= mOffsetLeft && position[0] <= getWidth() - mOffsetRight) {
-//
-//                String label = mData.getXVals().get(i);
-//
-//                if (mXLabels.isAvoidFirstLastClippingEnabled()) {
-//
-//                    // avoid clipping of the last
-//                    if (i == mData.getXValCount() - 1) {
-//                        float width = Utils.calcTextWidth(mXLabelPaint, label);
-//
-//                        if (width > getOffsetRight() * 2 && position[0] + width > getWidth())
-//                            position[0] -= width / 2;
-//
-//                        // avoid clipping of the first
-//                    } else if (i == 0) {
-//
-//                        float width = Utils.calcTextWidth(mXLabelPaint, label);
-//                        position[0] += width / 2;
-//                    }
-//                }
-//
-//                mDrawCanvas.drawText(label, position[0],
-//                        yPos,
-//                        mXLabelPaint);
-//            }
-//        }
     }
 
     /**
