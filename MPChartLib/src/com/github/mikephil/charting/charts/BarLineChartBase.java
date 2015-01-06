@@ -636,9 +636,6 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
         final int leftVirtualIndex = (int) leftPointIndex[0];
         final int rightVirtualIndex = (int) rightPointIndex[0] + 1;
 
-        Log.d("Giggle", "left virtual index = " + leftVirtualIndex);
-        Log.d("Giggle", "right virtual index = " + rightVirtualIndex);
-
         // pre allocate to save performance (dont allocate in loop)
         float[] position = new float[] {
                 0f, 0f
