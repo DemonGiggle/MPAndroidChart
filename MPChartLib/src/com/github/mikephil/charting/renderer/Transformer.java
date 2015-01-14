@@ -51,8 +51,27 @@ public class Transformer {
     /** offset that allows the chart to be dragged over its bounds on the x-axis */
     private float mTransOffsetY = 0f;
 
+    /** if set to true, there is no limit on dragging on x-axis  */
+    private boolean mInfiniteDragX = false;
+
     public Transformer() {
 
+    }
+
+    /**
+     * Set infinite dragging
+     *
+     * @param enable true, to support infinite dragging
+     */
+    public void setInfiniteDragX(boolean enable) {
+        mInfiniteDragX = enable;
+    }
+
+    /**
+     * Check if it is infinite dragging now
+     */
+    public boolean isInfiniteDragX() {
+        return mInfiniteDragX;
     }
 
     /**
@@ -430,9 +449,11 @@ public class Transformer {
 
         // min scale-x is 1f
         mScaleX = Math.max(mMinScaleX, curScaleX);
+        vals[Matrix.MSCALE_X] = mScaleX;
 
         // min scale-y is 1f
         mScaleY = Math.max(mMinScaleY, curScaleY);
+        vals[Matrix.MSCALE_Y] = mScaleY;
 
         float width = 0f;
         float height = 0f;
@@ -442,13 +463,6 @@ public class Transformer {
             height = content.height();
         }
 
-        float maxTransX = -width * (mScaleX - 1f);
-        float newTransX = Math.min(Math.max(curTransX, maxTransX - mTransOffsetX), mTransOffsetX);
-
-        // if(curScaleX < mMinScaleX) {
-        // newTransX = (-width * (mScaleX - 1f)) / 2f;
-        // }
-
         float maxTransY = height * (mScaleY - 1f);
         float newTransY = Math.max(Math.min(curTransY, maxTransY + mTransOffsetY), -mTransOffsetY);
 
@@ -456,12 +470,18 @@ public class Transformer {
         // newTransY = (height * (mScaleY - 1f)) / 2f;
         // }
 
-        // FIXME: maybe we need a flag to decide infinite x-axis scrolling ?
-//        vals[Matrix.MTRANS_X] = newTransX;
-        vals[Matrix.MSCALE_X] = mScaleX;
-
         vals[Matrix.MTRANS_Y] = newTransY;
-        vals[Matrix.MSCALE_Y] = mScaleY;
+
+        if (!mInfiniteDragX) {
+            float maxTransX = -width * (mScaleX - 1f);
+            float newTransX = Math.min(Math.max(curTransX, maxTransX - mTransOffsetX), mTransOffsetX);
+
+            // if(curScaleX < mMinScaleX) {
+            // newTransX = (-width * (mScaleX - 1f)) / 2f;
+            // }
+
+            vals[Matrix.MTRANS_X] = newTransX;
+        }
 
         matrix.setValues(vals);
     }
@@ -599,7 +619,6 @@ public class Transformer {
      * @return
      */
     public boolean hasNoDragOffset() {
-//        return mTransOffsetX <= 0 && mTransOffsetY <= 0 ? true : false;
-        return false;
+        return !mInfiniteDragX && mTransOffsetX <= 0 && mTransOffsetY <= 0 ? true : false;
     }
 }
