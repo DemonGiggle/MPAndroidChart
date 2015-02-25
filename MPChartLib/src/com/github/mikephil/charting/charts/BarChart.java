@@ -3,7 +3,6 @@ package com.github.mikephil.charting.charts;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.RectF;
@@ -62,6 +61,9 @@ public class BarChart extends BarLineChartBase<BarData> {
 
     /** the rect object that is used for drawing the bars */
     private RectF mBarRect = new RectF();
+
+    /** indicate if we treat all the data set as one bar chart presentation */
+    protected boolean mUnifyDataSetAsOneChart = false;
 
     public BarChart(Context context) {
         super(context);
@@ -191,7 +193,8 @@ public class BarChart extends BarLineChartBase<BarData> {
                 BarEntry e = entries.get(j);
 
                 // calculate the x-position, depending on datasetcount
-                float x = e.getXIndex() + j * (setCount - 1) + i + space * j + space / 2f;
+                float x = (mUnifyDataSetAsOneChart) ? e.getXIndex() :
+                    (e.getXIndex() + j * (setCount - 1) + i + space * j + space / 2f);
                 float y = e.getVal();
 
                 // no stacks
@@ -472,7 +475,7 @@ public class BarChart extends BarLineChartBase<BarData> {
     /**
      * Draws a value at the specified x and y position.
      * 
-     * @param value
+     * @param val
      * @param xPos
      * @param yPos
      */
@@ -549,7 +552,6 @@ public class BarChart extends BarLineChartBase<BarData> {
      * Returns null if the Entry could not be found in the charts data.
      * 
      * @param e
-     * @param dataSetIndex
      * @return
      */
     public RectF getBarBounds(BarEntry e) {
@@ -707,6 +709,27 @@ public class BarChart extends BarLineChartBase<BarData> {
      */
     public boolean isDrawBarShadowEnabled() {
         return mDrawBarShadow;
+    }
+
+
+    /**
+     * Originally, one data set represents a bar chart, which may be arranged adjanced to each
+     * other with a space in between. If set to true, the conditions described above will not
+     * occur, that is, no matter how many data set is specified, they will be treated as only
+     * one bar chart.
+     *
+     * @param enabled
+     */
+    public void setUnifyDataSetAsOneChart(boolean enabled) {
+        mUnifyDataSetAsOneChart = enabled;
+    }
+
+    /**
+     * returns true if it is enabled
+     * @return
+     */
+    public boolean isUnifyDataSetAsOneChart() {
+        return mUnifyDataSetAsOneChart;
     }
 
     @Override
